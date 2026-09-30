@@ -6,13 +6,13 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
-// Récupération de la liste des étudiants
+// Récupération de la liste des formateurs (table: formateur)
 try {
-    $getEtudiants = $bdd->prepare('SELECT * FROM etudiant ORDER BY id DESC');
-    $getEtudiants->execute();
-    $etudiants = $getEtudiants->fetchAll(PDO::FETCH_ASSOC);
+    $getFormateurs = $bdd->prepare('SELECT * FROM formateur ORDER BY id DESC');
+    $getFormateurs->execute();
+    $formateurs = $getFormateurs->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    $errorMsg = "Erreur lors de la récupération des étudiantes : " . $e->getMessage();
+    $errorMsg = "Erreur lors de la récupération des formatrices : " . $e->getMessage();
 }
 ?>
 <!DOCTYPE html>
@@ -23,9 +23,9 @@ try {
 
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Liste des Étudiantes</h2>
-            <a href="ajoutEtudiant.php" class="btn btn-success">
-                + Ajouter une étudiante
+            <h2>Liste des Formatrices</h2>
+            <a href="ajoutFormateur.php" class="btn btn-success">
+                + Ajouter une formatrice
             </a>
         </div>
 
@@ -43,32 +43,34 @@ try {
                             <th>Prénom</th>
                             <th>Email</th>
                             <th>Téléphone</th>
+                            <th>Spécialité</th>
                             <th>Date d'ajout</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (!empty($etudiants)): ?>
-                            <?php foreach ($etudiants as $etudiant): ?>
+                        <?php if (!empty($formateurs)): ?>
+                            <?php foreach ($formateurs as $formateur): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($etudiant['id']); ?></td>
-                                    <td><strong><?= htmlspecialchars($etudiant['nom']); ?></strong></td>
-                                    <td><?= htmlspecialchars($etudiant['prenom']); ?></td>
-                                    <td><?= htmlspecialchars($etudiant['email']); ?></td>
-                                    <td><?= htmlspecialchars($etudiant['telephone']); ?></td>
+                                    <td><?= htmlspecialchars($formateur['id']); ?></td>
+                                    <td><strong><?= htmlspecialchars($formateur['nom']); ?></strong></td>
+                                    <td><?= htmlspecialchars($formateur['prenom']); ?></td>
+                                    <td><?= htmlspecialchars($formateur['email']); ?></td>
+                                    <td><?= htmlspecialchars($formateur['telephone']); ?></td>
+                                    <td><?= htmlspecialchars($formateur['specialite'] ?? '-'); ?></td>
                                     <td>
-                                        <?= !empty($etudiant['date_created']) ? date('d/m/Y H:i', strtotime($etudiant['date_created'])) : '-'; ?>
+                                        <?= !empty($formateur['date_created']) ? date('d/m/Y H:i', strtotime($formateur['date_created'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="modifEtudiant.php?id=<?= $etudiant['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
-                                        <a href="supprEtudiant.php?id=<?= $etudiant['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cet étudiant ?');">Supprimer</a>
+                                        <a href="modifFormateur.php?id=<?= $formateur['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
+                                        <a href="supprFormateur.php?id=<?= $formateur['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette formatrice ?');">Supprimer</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
-                                    Aucune étudiante enregistrée pour le moment.
+                                <td colspan="8" class="text-center text-muted py-4">
+                                    Aucune formatrice enregistrée pour le moment.
                                 </td>
                             </tr>
                         <?php endif; ?>

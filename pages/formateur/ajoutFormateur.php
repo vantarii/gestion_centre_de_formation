@@ -1,11 +1,9 @@
 <?php
-// Activer l'affichage des erreurs pour le débogage
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Concaténation explicite de __DIR__ avec le chemin relatif
 require_once __DIR__ . '/../../traitements/users/security.php';
-require_once __DIR__ . '/../../traitements/etudiants/ajout.php';
+require_once __DIR__ . '/../../traitements/formateurs/ajout.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -15,7 +13,7 @@ require_once __DIR__ . '/../../traitements/etudiants/ajout.php';
 
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Ajouter une nouvelle étudiante</h2>
+            <h2>Ajouter une nouvelle formatrice</h2>
             <a href="index.php" class="btn btn-outline-secondary">← Retour à la liste</a>
         </div>
         <hr>
@@ -34,12 +32,12 @@ require_once __DIR__ . '/../../traitements/etudiants/ajout.php';
 
         <form method="POST">
             <div class="mb-3">
-                <label for="nom" class="form-label">Nom de l'étudiante *</label>
+                <label for="nom" class="form-label">Nom de la formatrice *</label>
                 <input type="text" class="form-control" id="nom" name="nom" required>
             </div>
 
             <div class="mb-3">
-                <label for="prenom" class="form-label">Prénom de l'étudiante *</label>
+                <label for="prenom" class="form-label">Prénom de la formatrice *</label>
                 <input type="text" class="form-control" id="prenom" name="prenom" required>
             </div>
 
@@ -49,21 +47,16 @@ require_once __DIR__ . '/../../traitements/etudiants/ajout.php';
             </div>
 
             <div class="mb-3">
-                <label for="email" class="form-label">Email de l'étudiant *</label>
+                <label for="email" class="form-label">Email de la formatrice *</label>
                 <input type="email" class="form-control" id="email" name="email" required>
             </div>
 
             <div class="mb-3">
-                <label for="date_naissance" class="form-label">Date de naissance</label>
-                <input type="date" class="form-control" id="date_naissance" name="date_naissance">
+                <label for="specialite" class="form-label">Spécialité</label>
+                <textarea class="form-control" id="specialite" name="specialite" rows="3"></textarea>
             </div>
 
-            <div class="mb-3">
-                <label for="adresse" class="form-label">Adresse</label>
-                <textarea class="form-control" id="adresse" name="adresse" rows="3"></textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary" name="validate">Enregistrer l'étudiante</button>
+            <button type="submit" class="btn btn-primary" name="validate">Enregistrer la formatrice</button>
         </form>
     </div>
 </body>
