@@ -19,12 +19,25 @@
             <a class="nav-link" href="/pages/inscriptions/index.php">Inscriptions</a>
         </li>
         </ul>
-        <ul class="navbar-nav ms-auto">
-        <?php if (isset($_SESSION['auth']) && $_SESSION['auth'] === true): ?>
-            <li class="nav-item">
-            <span class="nav-link text-light">Bonjour, <?= htmlspecialchars($_SESSION['firstname'] ?? 'Gérant'); ?></span>
-            </li>
-        <?php endif; ?>
+        <ul class="navbar-nav ms-auto align-items-center">
+                <?php if (isset($_SESSION['auth']) && $_SESSION['auth'] === true): ?>
+                    <li class="nav-item me-3">
+                        <span class="nav-link text-light mb-0">
+                            Bonjour, <strong><?= htmlspecialchars($_SESSION['firstname'] ?? 'Gérant'); ?></strong>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/traitements/users/logout.php" class="btn btn-outline-danger btn-sm">
+                            Se déconnecter
+                        </a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a href="/traitements/users/login.php" class="btn btn-outline-light btn-sm">
+                            Connexion
+                        </a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

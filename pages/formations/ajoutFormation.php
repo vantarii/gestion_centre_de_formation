@@ -33,7 +33,7 @@ require_once __DIR__ . '/../../traitements/formations/ajout.php';
 
         <form method="POST">
             <div class="mb-3">
-                <label for="nom" class="form-label">Nom de la formation *</label>
+                <label for="titre" class="form-label">Nom de la formation *</label>
                 <input type="text" class="form-control" id="titre" name="titre" required>
             </div>
 

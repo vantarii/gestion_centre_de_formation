@@ -7,12 +7,13 @@ require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
 // Récupération de la liste des étudiants
+// Récupérer UNIQUEMENT les étudiants actifs (status = 1)
 try {
-    $getEtudiants = $bdd->prepare('SELECT * FROM etudiant ORDER BY id DESC');
+    $getEtudiants = $bdd->prepare('SELECT * FROM etudiant WHERE status = 1 ORDER BY id DESC');
     $getEtudiants->execute();
     $etudiants = $getEtudiants->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    $errorMsg = "Erreur lors de la récupération des étudiantes : " . $e->getMessage();
+    $errorMsg = "Erreur lors de la récupération des étudiants : " . $e->getMessage();
 }
 ?>
 <!DOCTYPE html>

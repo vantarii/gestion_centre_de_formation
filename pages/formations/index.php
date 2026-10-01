@@ -51,7 +51,7 @@ try {
                             <?php foreach ($formations as $formation): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($formation['id']); ?></td>
-                                    <td><strong><?= htmlspecialchars($formation['titre'] ?? $formation['nom'] ?? ''); ?></strong></td>
+                                    <td><strong><?= htmlspecialchars($formation['titre'] ?? $formation['titre'] ?? ''); ?></strong></td>
                                     <td><?= htmlspecialchars($formation['duree'] ?? 'N/A'); ?></td>
                                     <td><?= number_format($formation['prix'], 2, ',', ' '); ?></td>
                                     <td>
