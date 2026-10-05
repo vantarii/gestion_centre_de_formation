@@ -19,7 +19,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         ');
         $softDeleteFormateur->execute([$idFormateur]);
 
-        // 3. Redirection vers la liste des formateurs
+        // 3. Redirection vers la liste des formatrices après la suppression
         header('Location: index.php');
         exit();
 
