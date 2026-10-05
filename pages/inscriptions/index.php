@@ -36,7 +36,7 @@ try {
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Gestion des Inscriptions</h2>
-            <a href="ajoutInscription.php" class="btn btn-success">
+            <a href="creationInscrip.php" class="btn btn-success">
                 + Nouvelle inscription
             </a>
         </div>
@@ -72,7 +72,7 @@ try {
                                         <?= !empty($inscription['date_inscription']) ? date('d/m/Y H:i', strtotime($inscription['date_inscription'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="supprInscription.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment annuler cette inscription ?');">
+                                        <a href="annulerInscrip.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment annuler cette inscription ?');">
                                             Annuler / Supprimer
                                         </a>
                                     </td>
