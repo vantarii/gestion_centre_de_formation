@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../../traitements/users/security.php';
-require_once __DIR__ . '/../../traitements/formateurs/modification.php';
+require_once __DIR__ . '/../../traitements/formateurs/modificat.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
