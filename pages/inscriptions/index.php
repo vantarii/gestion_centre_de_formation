@@ -73,7 +73,7 @@ try {
                                     </td>
                                     <td class="text-center">
                                         <a href="annulerInscrip.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment annuler cette inscription ?');">
-                                            Annuler / Supprimer
+                                        Annuler
                                         </a>
                                     </td>
                                 </tr>
