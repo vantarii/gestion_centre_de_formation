@@ -5,20 +5,19 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
-// Récupération des inscriptions actives (status = 1) avec les informations des étudiants et des formations
+// Récupération des inscriptions actives (status = 1)
 try {
     $getInscriptions = $bdd->prepare('
         SELECT 
             i.id,
             i.date_inscription,
-            i.date_created,
             e.nom AS etudiant_nom,
             e.prenom AS etudiant_prenom,
             f.titre AS formation_titre,
             f.prix AS formation_prix
         FROM inscription i
-        JOIN etudiant e ON i.id_etudiant = e.id
-        JOIN formation f ON i.id_formation = f.id
+        JOIN etudiant e ON i.etudiant_id = e.id
+        JOIN formation f ON i.formation_id = f.id
         WHERE i.status = 1
         ORDER BY i.id DESC
     ');
@@ -70,7 +69,7 @@ try {
                                     <td><span class="badge bg-primary"><?= htmlspecialchars($inscription['formation_titre']); ?></span></td>
                                     <td><?= number_format($inscription['formation_prix'], 2, ',', ' '); ?></td>
                                     <td>
-                                        <?= !empty($inscription['date_inscription']) ? date('d/m/Y H:i', strtotime($inscription['date_inscription'])) : date('d/m/Y H:i', strtotime($inscription['date_created'])); ?>
+                                        <?= !empty($inscription['date_inscription']) ? date('d/m/Y H:i', strtotime($inscription['date_inscription'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
                                         <a href="supprInscription.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment annuler cette inscription ?');">

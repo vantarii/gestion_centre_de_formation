@@ -32,27 +32,26 @@ require_once __DIR__ . '/../../traitements/inscriptions/ajout.php';
 
         <form method="POST">
             <div class="mb-3">
-                <label for="id_etudiant" class="form-label">Sélectionner l'étudiant *</label>
-                <select class="form-select" id="id_etudiant" name="id_etudiant" required>
-                    <option value="" selected disabled>-- Choisir un étudiant --</option>
+                <label for="id_etudiant" class="form-label">Sélectionner l'étudiante *</label>
+                <!-- Sélection de l'étudiant -->
+                <select name="etudiant_id" class="form-select" required>
+                    <option value="">-- Choisir un étudiant --</option>
                     <?php foreach ($etudiants as $etudiant): ?>
-                        <option value="<?= $etudiant['id']; ?>">
-                            <?= htmlspecialchars($etudiant['nom'] . ' ' . $etudiant['prenom']); ?>
-                        </option>
-                    <?php endforeach; ?>
+                    <option value="<?= $etudiant['id']; ?>">
+                    <?= htmlspecialchars($etudiant['nom'] . ' ' . $etudiant['prenom']); ?>
+                   </option>
+                <?php endforeach; ?>
                 </select>
-            </div>
 
-            <div class="mb-3">
-                <label for="id_formation" class="form-label">Sélectionner la formation *</label>
-                <select class="form-select" id="id_formation" name="id_formation" required>
-                    <option value="" selected disabled>-- Choisir une formation --</option>
-                    <?php foreach ($formations as $formation): ?>
-                        <option value="<?= $formation['id']; ?>">
-                            <?= htmlspecialchars($formation['titre']); ?> (<?= number_format($formation['prix'], 2, ',', ' '); ?> FCFA)
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+            <!-- Sélection de la formation -->
+            <select name="formation_id" class="form-select" required>
+            <option value="">-- Choisir une formation --</option>
+            <?php foreach ($formations as $formation): ?>
+            <option value="<?= $formation['id']; ?>">
+                <?= htmlspecialchars($formation['titre']); ?>
+            </option>
+           <?php endforeach; ?>
+           </select>
             </div>
 
             <button type="submit" class="btn btn-success" name="validate">Inscrire l'étudiant</button>

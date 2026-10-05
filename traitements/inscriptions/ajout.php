@@ -16,29 +16,27 @@ $formations = $getFormations->fetchAll(PDO::FETCH_ASSOC);
 // 3. Traitement de la soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
 
-    $idEtudiant = !empty($_POST['id_etudiant']) ? intval($_POST['id_etudiant']) : null;
-    $idFormation = !empty($_POST['id_formation']) ? intval($_POST['id_formation']) : null;
+    $etudiantId = !empty($_POST['etudiant_id']) ? intval($_POST['etudiant_id']) : (!empty($_POST['id_etudiant']) ? intval($_POST['id_etudiant']) : null);
+    $formationId = !empty($_POST['formation_id']) ? intval($_POST['formation_id']) : (!empty($_POST['id_formation']) ? intval($_POST['id_formation']) : null);
 
-    if ($idEtudiant && $idFormation) {
+    if ($etudiantId && $formationId) {
 
         // Vérification des doublons (étudiant déjà inscrit à cette formation)
         $checkInscription = $bdd->prepare('
             SELECT id FROM inscription 
-            WHERE id_etudiant = ? AND id_formation = ? AND status = 1
+            WHERE etudiant_id = ? AND formation_id = ? AND status = 1
         ');
-        $checkInscription->execute([$idEtudiant, $idFormation]);
+        $checkInscription->execute([$etudiantId, $formationId]);
 
         if ($checkInscription->rowCount() > 0) {
-            $errorMsg = "Cet étudiant est déjà inscrit à cette formation !";
+            $errorMsg = "Cette étudiante est déjà inscrite à cette formation !";
         } else {
-            $created_by = $_SESSION['id'] ?? 1;
-
             try {
                 $insertInscription = $bdd->prepare('
-                    INSERT INTO inscription (id_etudiant, id_formation, date_inscription, status, date_created, created_by)
-                    VALUES (?, ?, NOW(), 1, NOW(), ?)
+                    INSERT INTO inscription (etudiant_id, formation_id, date_inscription, status)
+                    VALUES (?, ?, NOW(), 1)
                 ');
-                $insertInscription->execute([$idEtudiant, $idFormation, $created_by]);
+                $insertInscription->execute([$etudiantId, $formationId]);
 
                 $successMsg = "L'inscription a été enregistrée avec succès !";
             } catch (PDOException $e) {
@@ -47,6 +45,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
         }
 
     } else {
-        $errorMsg = "Veuillez sélectionner un étudiant et une formation.";
+        $errorMsg = "Veuillez sélectionner une étudiante et une formation.";
     }
 }
