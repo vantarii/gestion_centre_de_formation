@@ -6,9 +6,9 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
-// Récupération de la liste des formations
+// Récupération de la liste des formations actives (status = 1)
 try {
-    $getFormations = $bdd->prepare('SELECT * FROM formation ORDER BY id DESC');
+    $getFormations = $bdd->prepare('SELECT * FROM formation WHERE status = 1 ORDER BY id DESC');
     $getFormations->execute();
     $formations = $getFormations->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -41,7 +41,7 @@ try {
                             <th>#ID</th>
                             <th>Nom</th>
                             <th>Durée</th>
-                            <th>Prix</th>
+                            <th>Prix (FCFA)</th>
                             <th>Date de création</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -51,7 +51,7 @@ try {
                             <?php foreach ($formations as $formation): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($formation['id']); ?></td>
-                                    <td><strong><?= htmlspecialchars($formation['titre'] ?? $formation['titre'] ?? ''); ?></strong></td>
+                                    <td><strong><?= htmlspecialchars($formation['titre']); ?></strong></td>
                                     <td><?= htmlspecialchars($formation['duree'] ?? 'N/A'); ?></td>
                                     <td><?= number_format($formation['prix'], 2, ',', ' '); ?></td>
                                     <td>
