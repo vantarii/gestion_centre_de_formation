@@ -46,15 +46,15 @@ require_once __DIR__ . '/../../traitements/formateurs/modification.php';
                     <label for="telephone" class="form-label">Téléphone *</label>
                     <input type="text" class="form-control" id="telephone" name="telephone" value="<?= htmlspecialchars($telephone); ?>" required>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="email" class="form-label">Email *</label>
                     <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($email); ?>" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="date_naissance" class="form-label">Date de naissance *</label>
-                    <input type="date" class="form-control" id="date_naissance" name="date_naissance" value="<?= htmlspecialchars($date_naissance); ?>" required>
+                    <label for="specialite" class="form-label">Spécialité</label>
+                    <textarea class="form-control" id="specialite" name="specialite" rows="3"><?= htmlspecialchars($specialite ?? ''); ?></textarea>
                 </div>
 
                 <div class="mb-3">
