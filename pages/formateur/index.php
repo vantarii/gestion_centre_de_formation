@@ -6,9 +6,9 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
-// Récupération de la liste des formateurs (table: formateur)
+// Récupération de la liste des formatrices actives (status = 1)
 try {
-    $getFormateurs = $bdd->prepare('SELECT * FROM formateur ORDER BY id DESC');
+    $getFormateurs = $bdd->prepare('SELECT * FROM formateur WHERE status = 1 ORDER BY id DESC');
     $getFormateurs->execute();
     $formateurs = $getFormateurs->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {

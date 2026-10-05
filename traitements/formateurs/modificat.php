@@ -1,78 +1,43 @@
 <?php
+require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// 1. Récupération des données de la formatrice active (status = 1)
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $idFormateur = $_GET['id'];
 
-    $getFormateur = $bdd->prepare('SELECT * FROM formateur WHERE id = ? AND status = 1');
-    $getFormateur->execute([$idFormateur]);
+    // 1. Vérifier si la formatrice existe et n'est pas déjà supprimée (status != 0 ou NULL)
+    $checkIfFormateurExists = $bdd->prepare('SELECT id FROM formateur WHERE id = ? AND (status = 1 OR status IS NULL)');
+    $checkIfFormateurExists->execute([$idFormateur]);
 
-    if ($getFormateur->rowCount() > 0) {
-        $formateurInfos = $getFormateur->fetch(PDO::FETCH_ASSOC);
-        
-        $nom = $formateurInfos['nom'];
-        $prenom = $formateurInfos['prenom'];
-        $email = $formateurInfos['email'];
-        $telephone = $formateurInfos['telephone'];
-        $specialite = $formateurInfos['specialite'];
+    if ($checkIfFormateurExists->rowCount() > 0) {
+
+        // 2. Suppression logique : passage de status à 0
+        $softDeleteFormateur = $bdd->prepare('
+            UPDATE formateur 
+            SET status = 0, date_updated = NOW() 
+            WHERE id = ?
+        ');
+        $softDeleteFormateur->execute([$idFormateur]);
+
+        // 3. Redirection vers la liste des formatrices
+        header('Location: index.php');
+        exit();
+
     } else {
-        $errorMsg = "Aucune formatrice active trouvée avec cet identifiant.";
+        $errorMsg = "Aucune formatrice active trouvée avec cet ID.";
     }
 } else {
-    $errorMsg = "Aucun identifiant transmis.";
+    $errorMsg = "Aucun identifiant n'a été fourni.";
 }
-
-// 2. Traitement de la modification lors de l'envoi du formulaire
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
-
-    $newNom = !empty($_POST['nom']) ? trim(htmlspecialchars($_POST['nom'])) : null;
-    $newPrenom = !empty($_POST['prenom']) ? trim(htmlspecialchars($_POST['prenom'])) : null;
-    $newEmail = !empty($_POST['email']) ? trim(htmlspecialchars($_POST['email'])) : null;
-    $newTelephone = !empty($_POST['telephone']) ? trim(htmlspecialchars($_POST['telephone'])) : null;
-    $newSpecialite = !empty($_POST['specialite']) ? trim(htmlspecialchars($_POST['specialite'])) : null;
-
-    if ($newNom && $newPrenom && $newEmail && $newTelephone) {
-
-        $updated_by = $_SESSION['id'] ?? 1;
-
-        try {
-            $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-            $updateFormateur = $bdd->prepare('
-                UPDATE formateur 
-                SET nom = ?, prenom = ?, email = ?, telephone = ?, specialite = ?, date_updated = NOW(), updated_by = ?
-                WHERE id = ? AND status = 1
-            ');
-
-            $updateFormateur->execute([
-                $newNom,
-                $newPrenom,
-                $newEmail,
-                $newTelephone,
-                $newSpecialite,
-                $updated_by,
-                $idFormateur
-            ]);
-
-            // Mettre à jour les variables d'affichage du formulaire
-            $nom = $newNom;
-            $prenom = $newPrenom;
-            $email = $newEmail;
-            $telephone = $newTelephone;
-            $specialite = $newSpecialite;
-
-            $successMsg = "Les informations de la formatrice ont été mises à jour avec succès !";
-
-        } catch (PDOException $e) {
-            $errorMsg = "Erreur lors de la mise à jour : " . $e->getMessage();
-        }
-
-    } else {
-        $errorMsg = "Veuillez remplir tous les champs obligatoires (*).";
-    }
-}
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<?php include __DIR__ . '/../../includes/head.php'; ?>
+<body>
+    <?php include __DIR__ . '/../../includes/navbar.php'; ?>
+    <div class="container mt-5">
+        <div class="alert alert-danger"><?= $errorMsg; ?></div>
+        <a href="index.php" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
+</body>
+</html>
