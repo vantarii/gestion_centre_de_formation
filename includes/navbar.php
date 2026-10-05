@@ -18,6 +18,9 @@
         <li class="nav-item">
             <a class="nav-link" href="/pages/inscriptions/index.php">Inscriptions</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/pages/paiements/index.php">Paiements</a>
+        </li>
         </ul>
         <ul class="navbar-nav ms-auto align-items-center">
                 <?php if (isset($_SESSION['auth']) && $_SESSION['auth'] === true): ?>
