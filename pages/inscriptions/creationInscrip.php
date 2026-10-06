@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
         $check->execute([$etudiantId, $formationId]);
 
         if ($check->rowCount() > 0) {
-            $errorMsg = "Cet étudiant est déjà inscrit à cette formation !";
+            $errorMsg = "Cette étudiante est déjà inscrite à cette formation !";
         } else {
             try {
                 $insert = $bdd->prepare('INSERT INTO inscription (etudiant_id, formation_id, date_inscription, status) VALUES (?, ?, NOW(), 1)');

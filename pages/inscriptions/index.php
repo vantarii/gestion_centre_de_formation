@@ -93,11 +93,11 @@ try {
                                     </td>
                                     <td class="text-center">
                                         <!-- Bouton Modifier -->
-                                        <a href="modif.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-warning me-1">
+                                        <a href="modifInscrip.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-warning me-1">
                                             Modifier
                                         </a>
 
-                                        <!-- Bouton Annuler / Supprimer -->
+                                        <!-- Bouton Annuler -->
                                         <a href="../../traitements/inscriptions/suppri.php?id=<?= $inscription['id']; ?>" 
                                            class="btn btn-sm btn-danger" 
                                            onclick="return confirm('Voulez-vous vraiment annuler cette inscription ?');">

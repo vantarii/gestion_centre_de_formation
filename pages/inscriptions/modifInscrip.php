@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
         $checkDuplicate->execute([$etudiantId, $formationId, $idInscription]);
 
         if ($checkDuplicate->rowCount() > 0) {
-            $errorMsg = "Cet étudiant est déjà inscrit à cette formation !";
+            $errorMsg = "Cette étudiante est déjà inscrite à cette formation !";
         } else {
             try {
                 $update = $bdd->prepare('
