@@ -2,6 +2,10 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
@@ -41,8 +45,24 @@ try {
             </a>
         </div>
 
+        <!-- Notification de succès -->
+        <?php if (isset($_SESSION['success_msg'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($_SESSION['success_msg']); ?>
+                <?php unset($_SESSION['success_msg']); ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- Notification d'erreur -->
+        <?php if (isset($_SESSION['error_msg'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($_SESSION['error_msg']); ?>
+                <?php unset($_SESSION['error_msg']); ?>
+            </div>
+        <?php endif; ?>
+
         <?php if (isset($errorMsg)): ?>
-            <div class="alert alert-danger"><?= $errorMsg; ?></div>
+            <div class="alert alert-danger"><?= htmlspecialchars($errorMsg); ?></div>
         <?php endif; ?>
 
         <div class="card shadow-sm">
@@ -72,8 +92,16 @@ try {
                                         <?= !empty($inscription['date_inscription']) ? date('d/m/Y H:i', strtotime($inscription['date_inscription'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="annulerInscrip.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment annuler cette inscription ?');">
-                                        Annuler
+                                        <!-- Bouton Modifier -->
+                                        <a href="modif.php?id=<?= $inscription['id']; ?>" class="btn btn-sm btn-warning me-1">
+                                            Modifier
+                                        </a>
+
+                                        <!-- Bouton Annuler / Supprimer -->
+                                        <a href="../../traitements/inscriptions/suppri.php?id=<?= $inscription['id']; ?>" 
+                                           class="btn btn-sm btn-danger" 
+                                           onclick="return confirm('Voulez-vous vraiment annuler cette inscription ?');">
+                                            Annuler
                                         </a>
                                     </td>
                                 </tr>

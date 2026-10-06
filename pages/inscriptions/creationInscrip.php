@@ -2,8 +2,45 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../../traitements/users/security.php';
-require_once __DIR__ . '/../../traitements/inscriptions/ajout.php';
+require_once __DIR__ . '/../../config/database.php';
+
+// Récupération des étudiants et formations
+$etudiants = $bdd->query('SELECT id, nom, prenom FROM etudiant WHERE status = 1 ORDER BY nom ASC')->fetchAll(PDO::FETCH_ASSOC);
+$formations = $bdd->query('SELECT id, titre, prix FROM formation WHERE status = 1 ORDER BY titre ASC')->fetchAll(PDO::FETCH_ASSOC);
+
+// Traitement de l'ajout
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
+    $etudiantId = !empty($_POST['etudiant_id']) ? intval($_POST['etudiant_id']) : null;
+    $formationId = !empty($_POST['formation_id']) ? intval($_POST['formation_id']) : null;
+
+    if ($etudiantId && $formationId) {
+        // Vérification des doublons
+        $check = $bdd->prepare('SELECT id FROM inscription WHERE etudiant_id = ? AND formation_id = ? AND status = 1');
+        $check->execute([$etudiantId, $formationId]);
+
+        if ($check->rowCount() > 0) {
+            $errorMsg = "Cet étudiant est déjà inscrit à cette formation !";
+        } else {
+            try {
+                $insert = $bdd->prepare('INSERT INTO inscription (etudiant_id, formation_id, date_inscription, status) VALUES (?, ?, NOW(), 1)');
+                $insert->execute([$etudiantId, $formationId]);
+
+                $_SESSION['success_msg'] = "L'inscription a été enregistrée avec succès !";
+                header('Location: index.php');
+                exit();
+            } catch (PDOException $e) {
+                $errorMsg = "Erreur lors de l'enregistrement : " . $e->getMessage();
+            }
+        }
+    } else {
+        $errorMsg = "Veuillez sélectionner un étudiant et une formation.";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,51 +48,53 @@ require_once __DIR__ . '/../../traitements/inscriptions/ajout.php';
 <body>
     <?php include __DIR__ . '/../../includes/navbar.php'; ?>
 
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>Nouvelle Inscription</h2>
-            <a href="index.php" class="btn btn-outline-secondary">← Retour à la liste</a>
+    <div class="container mt-5" style="max-width: 600px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Nouvelle inscription</h2>
+            <a href="index.php" class="btn btn-secondary">← Retour</a>
         </div>
-        <hr>
 
         <?php if (isset($errorMsg)): ?>
-            <div class="alert alert-danger" role="alert">
-                <?= $errorMsg; ?>
-            </div>
+            <div class="alert alert-danger"><?= htmlspecialchars($errorMsg); ?></div>
         <?php endif; ?>
 
-        <?php if (isset($successMsg)): ?>
-            <div class="alert alert-success" role="alert">
-                <?= $successMsg; ?>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form method="POST">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Étudiant :</label>
+                        <select name="etudiant_id" class="form-select" required>
+                            <option value="">-- Choisir un étudiant --</option>
+                            <?php foreach ($etudiants as $etudiant): ?>
+                                <option value="<?= $etudiant['id']; ?>">
+                                    <?= htmlspecialchars($etudiant['nom'] . ' ' . $etudiant['prenom']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Formation :</label>
+                        <select name="formation_id" class="form-select" required>
+                            <option value="">-- Choisir une formation --</option>
+                            <?php foreach ($formations as $formation): ?>
+                                <option value="<?= $formation['id']; ?>">
+                                    <?= htmlspecialchars($formation['titre']) . ' (' . number_format($formation['prix'], 0, ',', ' ') . ' FCFA)'; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" name="validate" class="btn btn-success">
+                            Valider l'inscription
+                        </button>
+                    </div>
+
+                </form>
             </div>
-        <?php endif; ?>
-
-        <form method="POST">
-            <div class="mb-3">
-                <label for="id_etudiant" class="form-label">Sélectionner l'étudiante *</label>
-                <!-- Sélection de l'étudiant -->
-                <select name="etudiant_id" class="form-select" required>
-                    <option value="">-- Choisir un étudiant --</option>
-                    <?php foreach ($etudiants as $etudiant): ?>
-                    <option value="<?= $etudiant['id']; ?>">
-                    <?= htmlspecialchars($etudiant['nom'] . ' ' . $etudiant['prenom']); ?>
-                   </option>
-                <?php endforeach; ?>
-                </select>
-
-            <!-- Sélection de la formation -->
-            <select name="formation_id" class="form-select" required>
-            <option value="">-- Choisir une formation --</option>
-            <?php foreach ($formations as $formation): ?>
-            <option value="<?= $formation['id']; ?>">
-                <?= htmlspecialchars($formation['titre']); ?>
-            </option>
-           <?php endforeach; ?>
-           </select>
-            </div>
-
-            <button type="submit" class="btn btn-success" name="validate">Inscrire l'étudiant</button>
-        </form>
+        </div>
     </div>
 </body>
 </html>
