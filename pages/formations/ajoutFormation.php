@@ -38,7 +38,7 @@ require_once __DIR__ . '/../../traitements/formations/ajout.php';
             </div>
 
             <div class="mb-3">
-                <label for="duree" class="form-label">Durée (ex: 3 mois, 40 heures)</label>
+                <label for="duree" class="form-label">Durée (ex: 3 mois / 40 heures)</label>
                 <input type="text" class="form-control" id="duree" name="duree" placeholder="ex: 3 mois">
             </div>
 
