@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
     $modePaiement = !empty($_POST['mode_paiement']) ? trim(htmlspecialchars($_POST['mode_paiement'])) : null;
     $reference = !empty($_POST['reference']) ? trim(htmlspecialchars($_POST['reference'])) : null;
     $datePaiement = !empty($_POST['date_paiement']) ? $_POST['date_paiement'] : date('Y-m-d H:i:s');
-    $statut = !empty($_POST['statut']) ? trim(htmlspecialchars($_POST['statut'])) : 'Validé';
+    $statut = isset($_POST['statut']) ? intval($_POST['statut']) : 1;
 
     if ($inscriptionId && $montant && $modePaiement && $reference) {
         try {
@@ -30,12 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
                 $statut
             ]);
 
-            $_SESSION['success_msg'] = "Paiement de " . number_format($montant, 0, ',', ' ') . " FCFA enregistré avec la référence " . $reference . " !";
+            $_SESSION['success_msg'] = "Paiement de " . number_format($montant, 0, ',', ' ') . " FCFA enregistré avec succès !";
             header('Location: ../../pages/paiements/index.php');
             exit();
 
         } catch (PDOException $e) {
-            $_SESSION['error_msg'] = "Erreur lors de l'enregistrement : " . $e->getMessage();
+            $_SESSION['error_msg'] = "Erreur SQL lors de l'enregistrement : " . $e->getMessage();
             header('Location: ../../pages/paiements/ajoutPaiement.php');
             exit();
         }

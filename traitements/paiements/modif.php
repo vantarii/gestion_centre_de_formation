@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
     $modePaiement = !empty($_POST['mode_paiement']) ? trim(htmlspecialchars($_POST['mode_paiement'])) : null;
     $reference = !empty($_POST['reference']) ? trim(htmlspecialchars($_POST['reference'])) : null;
     $datePaiement = !empty($_POST['date_paiement']) ? $_POST['date_paiement'] : date('Y-m-d H:i:s');
-    $statut = !empty($_POST['statut']) ? trim(htmlspecialchars($_POST['statut'])) : 'Validé';
+    $statut = isset($_POST['statut']) ? intval($_POST['statut']) : 1;
 
     if ($idPaiement && $inscriptionId && $montant && $modePaiement && $reference) {
         try {
@@ -34,20 +34,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
             ]);
 
             $_SESSION['success_msg'] = "Le paiement a été mis à jour avec succès.";
-            header('Location: ../../pages/paiement/index.php');
+            header('Location: ../../pages/paiements/index.php');
             exit();
 
         } catch (PDOException $e) {
             $_SESSION['error_msg'] = "Erreur SQL lors de la modification : " . $e->getMessage();
-            header('Location: ../../pages/paiement/modifPaiement.php?id=' . $idPaiement);
+            header('Location: ../../pages/paiements/modifPaiement.php?id=' . $idPaiement);
             exit();
         }
     } else {
-        $_SESSION['error_msg'] = "Tous les champs sont requis.";
-        header('Location: ../../pages/paiement/modifPaiement.php?id=' . $idPaiement);
+        $_SESSION['error_msg'] = "Tous les champs obligatoires doivent être remplis.";
+        header('Location: ../../pages/paiements/modifPaiement.php?id=' . $idPaiement);
         exit();
     }
 } else {
-    header('Location: ../../pages/paiement/index.php');
+    header('Location: ../../pages/paiements/index.php');
     exit();
 }

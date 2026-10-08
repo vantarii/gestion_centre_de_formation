@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
-// Gestion du filtre de recherche
+// Filtres de recherche
 $search = !empty($_GET['search']) ? trim(htmlspecialchars($_GET['search'])) : null;
 $modeFilter = !empty($_GET['mode_paiement']) ? trim(htmlspecialchars($_GET['mode_paiement'])) : null;
 
@@ -85,12 +85,12 @@ try {
             </div>
         <?php endif; ?>
 
-        <!-- Barre de Recherche & Filtrage -->
+        <!-- Barre de recherche -->
         <div class="card mb-4 shadow-sm">
             <div class="card-body">
                 <form method="GET" class="row g-3">
                     <div class="col-md-6">
-                        <input type="text" name="search" class="form-control" placeholder="Rechercher par référence, nom ou prénom d'étudiant..." value="<?= htmlspecialchars($search ?? ''); ?>">
+                        <input type="text" name="search" class="form-control" placeholder="Rechercher par référence, nom ou prénom..." value="<?= htmlspecialchars($search ?? ''); ?>">
                     </div>
                     <div class="col-md-4">
                         <select name="mode_paiement" class="form-select">
@@ -107,7 +107,7 @@ try {
                     </div>
                     <div class="col-md-2 d-flex gap-2">
                         <button type="submit" class="btn btn-primary w-100">Rechercher</button>
-                        <a href="index.php" class="btn btn-outline-secondary">Réinitialiser</a>
+                        <a href="index.php" class="btn btn-outline-secondary">Effacer</a>
                     </div>
                 </form>
             </div>
@@ -144,14 +144,15 @@ try {
                                     <td><span class="badge bg-info text-dark"><?= htmlspecialchars($paiement['mode_paiement']); ?></span></td>
                                     <td>
                                         <?php 
-                                        $statutClass = match($paiement['statut'] ?? 'Validé') {
-                                            'Validé' => 'bg-success',
-                                            'En attente' => 'bg-warning text-dark',
-                                            'Échoué' => 'bg-danger',
-                                            default => 'bg-secondary'
-                                        };
+                                        $st = intval($paiement['statut'] ?? 1);
+                                        if ($st === 1) {
+                                            echo '<span class="badge bg-success">Validé</span>';
+                                        } elseif ($st === 0) {
+                                            echo '<span class="badge bg-warning text-dark">En attente</span>';
+                                        } else {
+                                            echo '<span class="badge bg-danger">Échoué</span>';
+                                        }
                                         ?>
-                                        <span class="badge <?= $statutClass; ?>"><?= htmlspecialchars($paiement['statut'] ?? 'Validé'); ?></span>
                                     </td>
                                     <td>
                                         <?= !empty($paiement['date_paiement']) ? date('d/m/Y H:i', strtotime($paiement['date_paiement'])) : '-'; ?>

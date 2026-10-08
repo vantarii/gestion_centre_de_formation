@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/../../traitements/users/security.php';
 require_once __DIR__ . '/../../config/database.php';
 
-// Récupération des inscriptions actives pour la sélection
+// Récupération des inscriptions actives
 $inscriptions = $bdd->query('
     SELECT 
         i.id AS inscription_id,
@@ -20,6 +20,7 @@ $inscriptions = $bdd->query('
     FROM inscription i
     JOIN etudiant e ON i.etudiant_id = e.id
     JOIN formation f ON i.formation_id = f.id
+    WHERE i.status = 1
     ORDER BY e.nom ASC
 ')->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -46,7 +47,6 @@ $inscriptions = $bdd->query('
             <div class="card-body">
                 <form action="../../traitements/paiements/ajout.php" method="POST">
                     
-                    <!-- Sélection de l'inscription -->
                     <div class="mb-3">
                         <label class="form-label">Inscription concernée * :</label>
                         <select name="inscription_id" class="form-select" required>
@@ -59,13 +59,11 @@ $inscriptions = $bdd->query('
                         </select>
                     </div>
 
-                    <!-- Montant -->
                     <div class="mb-3">
                         <label class="form-label">Montant du règlement (FCFA) * :</label>
                         <input type="number" step="0.01" min="1" name="montant" class="form-control" placeholder="Ex: 50000" required>
                     </div>
 
-                    <!-- Mode de paiement -->
                     <div class="mb-3">
                         <label class="form-label">Mode de paiement * :</label>
                         <select name="mode_paiement" class="form-select" required>
@@ -77,25 +75,22 @@ $inscriptions = $bdd->query('
                         </select>
                     </div>
 
-                    <!-- Référence du paiement -->
                     <div class="mb-3">
                         <label class="form-label">Référence de la transaction * :</label>
                         <input type="text" name="reference" class="form-control" placeholder="Ex: PAY-20261008-001 ou Réf TMoney/Flooz" required>
                     </div>
 
-                    <!-- Date du paiement -->
                     <div class="mb-3">
                         <label class="form-label">Date du paiement * :</label>
                         <input type="datetime-local" name="date_paiement" class="form-control" value="<?= date('Y-m-d\TH:i'); ?>" required>
                     </div>
 
-                    <!-- Statut du paiement -->
                     <div class="mb-3">
                         <label class="form-label">Statut du paiement * :</label>
                         <select name="statut" class="form-select" required>
-                            <option value="Validé" selected>Validé</option>
-                            <option value="En attente">En attente</option>
-                            <option value="Échoué">Échoué</option>
+                            <option value="1" selected>Validé</option>
+                            <option value="0">En attente</option>
+                            <option value="2">Échoué</option>
                         </select>
                     </div>
 

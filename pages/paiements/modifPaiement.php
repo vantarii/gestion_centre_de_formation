@@ -106,14 +106,9 @@ $inscriptions = $bdd->query('
                     <div class="mb-3">
                         <label class="form-label">Statut du paiement :</label>
                         <select name="statut" class="form-select" required>
-                            <?php 
-                            $statuts = ['Validé', 'En attente', 'Échoué'];
-                            foreach ($statuts as $st): 
-                            ?>
-                                <option value="<?= $st; ?>" <?= ($st === $paiement['statut']) ? 'selected' : ''; ?>>
-                                    <?= $st; ?>
-                                </option>
-                            <?php endforeach; ?>
+                            <option value="1" <?= (intval($paiement['statut']) === 1) ? 'selected' : ''; ?>>Validé</option>
+                            <option value="0" <?= (intval($paiement['statut']) === 0) ? 'selected' : ''; ?>>En attente</option>
+                            <option value="2" <?= (intval($paiement['statut']) === 2) ? 'selected' : ''; ?>>Échoué</option>
                         </select>
                     </div>
 
