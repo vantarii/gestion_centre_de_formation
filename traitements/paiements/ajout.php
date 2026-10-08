@@ -31,20 +31,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
             ]);
 
             $_SESSION['success_msg'] = "Paiement de " . number_format($montant, 0, ',', ' ') . " FCFA enregistré avec la référence " . $reference . " !";
-            header('Location: ../../pages/paiement/index.php');
+            header('Location: ../../pages/paiements/index.php');
             exit();
 
         } catch (PDOException $e) {
             $_SESSION['error_msg'] = "Erreur lors de l'enregistrement : " . $e->getMessage();
-            header('Location: ../../pages/paiement/ajoutPaiement.php');
+            header('Location: ../../pages/paiements/ajoutPaiement.php');
             exit();
         }
     } else {
         $_SESSION['error_msg'] = "Veuillez remplir tous les champs obligatoires.";
-        header('Location: ../../pages/paiement/ajoutPaiement.php');
+        header('Location: ../../pages/paiements/ajoutPaiement.php');
         exit();
     }
 } else {
-    header('Location: ../../pages/paiement/index.php');
+    header('Location: ../../pages/paiements/index.php');
     exit();
 }
