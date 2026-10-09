@@ -56,7 +56,7 @@ try {
                                         <?= !empty($formation['date_created']) ? date('d/m/Y H:i', strtotime($formation['date_created'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="modifFormation.php?id=<?= $formation['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
+                                        <a href="modifFormation.php?uuid=<?= $formation['formation_uuid'] ?? $formation['id']; ?>" class="btn btn-warning">Modifier</a>
                                         <a href="supprFormation.php?id=<?= $formation['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette formation ?');">Supprimer</a>
                                     </td>
                                 </tr>

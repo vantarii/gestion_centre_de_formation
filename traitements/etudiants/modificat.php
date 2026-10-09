@@ -5,21 +5,51 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 1. Récupération des données de l'étudiant actif (status = 1)
-if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $idEtudiant = $_GET['id'];
+/**
+ * Génère une chaîne aléatoire sécurisée pour etudiant_uuid
+ */
+function generateRandomString($length = 6)
+{
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
 
-    $getEtudiant = $bdd->prepare('SELECT * FROM etudiant WHERE id = ? AND status = 1');
-    $getEtudiant->execute([$idEtudiant]);
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[random_int(0, $charactersLength - 1)];
+    }
+
+    return $randomString;
+}
+
+// 1. Récupération de l'identifiant (uuid prioritaire, id numérique en repli)
+$paramIdentifiant = $_GET['uuid'] ?? $_GET['id'] ?? null;
+
+if (!empty($paramIdentifiant)) {
+
+    // Recherche de l'étudiant actif par etudiant_uuid OU par id
+    $getEtudiant = $bdd->prepare('SELECT * FROM etudiant WHERE (etudiant_uuid = ? OR id = ?) AND status = 1');
+    $getEtudiant->execute([$paramIdentifiant, $paramIdentifiant]);
 
     if ($getEtudiant->rowCount() > 0) {
         $etudiantInfos = $getEtudiant->fetch(PDO::FETCH_ASSOC);
-        
+
+        $idEtudiant = $etudiantInfos['id'];
+
+        // Si l'étudiant n'a pas encore d'UUID enregistré, on lui en génère un automatiquement
+        if (empty($etudiantInfos['etudiant_uuid'])) {
+            $newUuid = generateRandomString(6);
+            $updateUuid = $bdd->prepare('UPDATE etudiant SET etudiant_uuid = ? WHERE id = ?');
+            $updateUuid->execute([$newUuid, $idEtudiant]);
+            $etudiantInfos['etudiant_uuid'] = $newUuid;
+        }
+
+        $etudiantUuid = $etudiantInfos['etudiant_uuid'];
         $nom = $etudiantInfos['nom'];
         $prenom = $etudiantInfos['prenom'];
         $email = $etudiantInfos['email'];
         $telephone = $etudiantInfos['telephone'];
         $adresse = $etudiantInfos['adresse'];
+
     } else {
         $errorMsg = "Aucun étudiant actif trouvé avec cet identifiant.";
     }

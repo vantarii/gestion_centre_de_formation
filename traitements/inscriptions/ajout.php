@@ -5,46 +5,39 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 1. Récupérer les étudiants actifs
-$getEtudiants = $bdd->query('SELECT id, nom, prenom FROM etudiant WHERE status = 1 ORDER BY nom ASC');
-$etudiants = $getEtudiants->fetchAll(PDO::FETCH_ASSOC);
+function generateRandomString($length = 6) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[random_int(0, strlen($characters) - 1)];
+    }
+    return $randomString;
+}
 
-// 2. Récupérer les formations actives
-$getFormations = $bdd->query('SELECT id, titre, prix FROM formation WHERE status = 1 ORDER BY titre ASC');
-$formations = $getFormations->fetchAll(PDO::FETCH_ASSOC);
-
-// 3. Traitement de la soumission du formulaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
-
-    $etudiantId = !empty($_POST['etudiant_id']) ? intval($_POST['etudiant_id']) : (!empty($_POST['id_etudiant']) ? intval($_POST['id_etudiant']) : null);
-    $formationId = !empty($_POST['formation_id']) ? intval($_POST['formation_id']) : (!empty($_POST['id_formation']) ? intval($_POST['id_formation']) : null);
+    $etudiantId = !empty($_POST['etudiant_id']) ? intval($_POST['etudiant_id']) : null;
+    $formationId = !empty($_POST['formation_id']) ? intval($_POST['formation_id']) : null;
 
     if ($etudiantId && $formationId) {
+        // Génération UUID
+        do {
+            $inscriptionUuid = generateRandomString(6);
+            $checkUuid = $bdd->prepare('SELECT id FROM inscription WHERE inscription_uuid = ?');
+            $checkUuid->execute([$inscriptionUuid]);
+        } while ($checkUuid->rowCount() > 0);
 
-        // Vérification des doublons (étudiant déjà inscrit à cette formation)
-        $checkInscription = $bdd->prepare('
-            SELECT id FROM inscription 
-            WHERE etudiant_id = ? AND formation_id = ? AND status = 1
-        ');
-        $checkInscription->execute([$etudiantId, $formationId]);
+        try {
+            $insert = $bdd->prepare('
+                INSERT INTO inscription (inscription_uuid, etudiant_id, formation_id, date_inscription, status)
+                VALUES (?, ?, ?, NOW(), 1)
+            ');
+            $insert->execute([$inscriptionUuid, $etudiantId, $formationId]);
 
-        if ($checkInscription->rowCount() > 0) {
-            $errorMsg = "Cette étudiante est déjà inscrite à cette formation !";
-        } else {
-            try {
-                $insertInscription = $bdd->prepare('
-                    INSERT INTO inscription (etudiant_id, formation_id, date_inscription, status)
-                    VALUES (?, ?, NOW(), 1)
-                ');
-                $insertInscription->execute([$etudiantId, $formationId]);
-
-                $successMsg = "L'inscription a été enregistrée avec succès !";
-            } catch (PDOException $e) {
-                $errorMsg = "Erreur lors de l'enregistrement : " . $e->getMessage();
-            }
+            $_SESSION['success_msg'] = "Inscription validée avec succès !";
+            header('Location: ../../pages/inscriptions/index.php');
+            exit();
+        } catch (PDOException $e) {
+            $_SESSION['error_msg'] = "Erreur SQL : " . $e->getMessage();
         }
-
-    } else {
-        $errorMsg = "Veuillez sélectionner une étudiante et une formation.";
     }
 }

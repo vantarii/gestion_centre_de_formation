@@ -59,7 +59,7 @@ try {
                                         <?= !empty($etudiant['date_created']) ? date('d/m/Y H:i', strtotime($etudiant['date_created'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="modifEtudiant.php?id=<?= $etudiant['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
+                                        <a href="modifEtudiant.php?uuid=<?= !empty($etudiant['etudiant_uuid']) ? $etudiant['etudiant_uuid'] : $etudiant['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
                                         <a href="supprEtudiant.php?id=<?= $etudiant['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cet étudiant ?');">Supprimer</a>
                                     </td>
                                 </tr>
