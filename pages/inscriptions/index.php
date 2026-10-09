@@ -70,7 +70,6 @@ try {
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>#ID</th>
                             <th>Étudiant</th>
                             <th>Formation</th>
                             <th>Prix (FCFA)</th>
@@ -82,7 +81,6 @@ try {
                         <?php if (!empty($inscriptions)): ?>
                             <?php foreach ($inscriptions as $inscription): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($inscription['id']); ?></td>
                                     <td>
                                         <strong><?= htmlspecialchars($inscription['etudiant_nom'] . ' ' . $inscription['etudiant_prenom']); ?></strong>
                                     </td>

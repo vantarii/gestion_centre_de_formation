@@ -38,7 +38,6 @@ try {
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>#ID</th>
                             <th>Nom</th>
                             <th>Durée</th>
                             <th>Prix (FCFA)</th>
@@ -50,7 +49,6 @@ try {
                         <?php if (!empty($formations)): ?>
                             <?php foreach ($formations as $formation): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($formation['id']); ?></td>
                                     <td><strong><?= htmlspecialchars($formation['titre']); ?></strong></td>
                                     <td><?= htmlspecialchars($formation['duree'] ?? 'N/A'); ?></td>
                                     <td><?= number_format($formation['prix'], 2, ',', ' '); ?></td>

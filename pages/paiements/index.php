@@ -119,7 +119,6 @@ try {
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>#ID</th>
                             <th>Référence</th>
                             <th>Étudiant</th>
                             <th>Formation</th>
@@ -134,7 +133,6 @@ try {
                         <?php if (!empty($paiements)): ?>
                             <?php foreach ($paiements as $paiement): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($paiement['id']); ?></td>
                                     <td><code><?= htmlspecialchars($paiement['reference'] ?? 'N/A'); ?></code></td>
                                     <td>
                                         <strong><?= htmlspecialchars($paiement['etudiant_nom'] . ' ' . $paiement['etudiant_prenom']); ?></strong>

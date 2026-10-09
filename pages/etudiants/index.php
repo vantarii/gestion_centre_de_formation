@@ -39,7 +39,6 @@ try {
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>#ID</th>
                             <th>Nom</th>
                             <th>Prénom</th>
                             <th>Email</th>
@@ -52,7 +51,6 @@ try {
                         <?php if (!empty($etudiants)): ?>
                             <?php foreach ($etudiants as $etudiant): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($etudiant['id']); ?></td>
                                     <td><strong><?= htmlspecialchars($etudiant['nom']); ?></strong></td>
                                     <td><?= htmlspecialchars($etudiant['prenom']); ?></td>
                                     <td><?= htmlspecialchars($etudiant['email']); ?></td>

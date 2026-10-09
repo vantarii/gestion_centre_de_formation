@@ -38,7 +38,6 @@ try {
                 <table class="table table-striped table-hover align-middle mb-0">
                     <thead class="table-dark">
                         <tr>
-                            <th>#ID</th>
                             <th>Nom</th>
                             <th>Prénom</th>
                             <th>Email</th>
@@ -52,7 +51,6 @@ try {
                         <?php if (!empty($formateurs)): ?>
                             <?php foreach ($formateurs as $formateur): ?>
                                 <tr>
-                                    <td><?= htmlspecialchars($formateur['id']); ?></td>
                                     <td><strong><?= htmlspecialchars($formateur['nom']); ?></strong></td>
                                     <td><?= htmlspecialchars($formateur['prenom']); ?></td>
                                     <td><?= htmlspecialchars($formateur['email']); ?></td>

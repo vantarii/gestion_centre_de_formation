@@ -13,7 +13,7 @@
             <a class="nav-link" href="/pages/formations/index.php">Formations</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/pages/formateur/index.php">Formateurs</a>
+            <a class="nav-link" href="/pages/formateur/index.php">Formatrices</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/pages/inscriptions/index.php">Inscriptions</a>
