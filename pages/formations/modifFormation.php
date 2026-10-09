@@ -30,7 +30,7 @@ require_once __DIR__ . '/../../traitements/formations/modift.php';
             </div>
         <?php endif; ?>
 
-        <?php if (isset($formationInfos)): ?>
+        <?php if (isset($formation)): ?>
             <form method="POST">
                 <div class="mb-3">
                     <label for="titre" class="form-label">Nom / Titre de la formation *</label>
