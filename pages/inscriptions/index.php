@@ -91,7 +91,7 @@ try {
                                     </td>
                                     <td class="text-center">
                                         <!-- Bouton Modifier -->
-                                        <a href="modif.php?uuid=<?= $i['inscription_uuid'] ?? $i['id']; ?>" class="btn btn-warning">Modifier</a>
+                                        <a href="modif.php?uuid=<?= $inscription['inscription_uuid'] ?? $inscription['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
 
                                         <!-- Bouton Annuler -->
                                         <a href="../../traitements/inscriptions/suppri.php?id=<?= $inscription['id']; ?>" 

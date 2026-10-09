@@ -156,7 +156,7 @@ try {
                                         <?= !empty($paiement['date_paiement']) ? date('d/m/Y H:i', strtotime($paiement['date_paiement'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <a href="modifPaiement.php?uuid=<?= $p['paiement_uuid'] ?? $p['id']; ?>" class="btn btn-warning">Modifier</a>
+                                        <a href="modifPaiement.php?uuid=<?= $paiement['paiement_uuid'] ?? $paiement['id']; ?>" class="btn btn-warning">Modifier</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

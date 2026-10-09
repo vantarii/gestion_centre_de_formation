@@ -60,8 +60,8 @@ try {
                                         <?= !empty($formateur['date_created']) ? date('d/m/Y H:i', strtotime($formateur['date_created'])) : '-'; ?>
                                     </td>
                                     <td class="text-center">
-                                        <<a href="modifFormateur.php?uuid=<?= $formateur['formateur_uuid'] ?? $formateur['id']; ?>" class="btn btn-warning">Modifier</a>
-                                        <a href="supprFormateur.php?id=<?= $formateur['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette formatrice ?');">Supprimer</a>
+                                        <a href="modifFormateur.php?uuid=<?= $formateur['formateur_uuid'] ?? $formateur['id']; ?>" class="btn btn-warning">Modifier</a>
+                                        <a href="supprFormateur.php?uuid=<?= $formateur['formateur_uuid'] ?? $formateur['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Voulez-vous vraiment supprimer cette formatrice ?');">Supprimer</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

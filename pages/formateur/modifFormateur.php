@@ -11,7 +11,7 @@ require_once __DIR__ . '/../../traitements/formateurs/modificat.php';
 <body>
     <?php include __DIR__ . '/../../includes/navbar.php'; ?>
 
-    <div class="container mt-5">
+    <div class="container mt-5" style="max-width: 650px;">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2>Modifier une formatrice</h2>
             <a href="index.php" class="btn btn-outline-secondary">← Retour à la liste</a>
@@ -31,39 +31,40 @@ require_once __DIR__ . '/../../traitements/formateurs/modificat.php';
         <?php endif; ?>
 
         <?php if (isset($formateurInfos)): ?>
-            <form method="POST">
-                <div class="mb-3">
-                    <label for="nom" class="form-label">Nom *</label>
-                    <input type="text" class="form-control" id="nom" name="nom" value="<?= htmlspecialchars($nom); ?>" required>
-                </div>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="nom" class="form-label">Nom *</label>
+                            <input type="text" class="form-control" id="nom" name="nom" value="<?= htmlspecialchars($nom); ?>" required>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="prenom" class="form-label">Prénom *</label>
-                    <input type="text" class="form-control" id="prenom" name="prenom" value="<?= htmlspecialchars($prenom); ?>" required>
-                </div>
+                        <div class="mb-3">
+                            <label for="prenom" class="form-label">Prénom *</label>
+                            <input type="text" class="form-control" id="prenom" name="prenom" value="<?= htmlspecialchars($prenom); ?>" required>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="telephone" class="form-label">Téléphone *</label>
-                    <input type="text" class="form-control" id="telephone" name="telephone" value="<?= htmlspecialchars($telephone); ?>" required>
-                </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($email); ?>" required>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email *</label>
-                    <input type="email" class="form-control" id="email" name="email" value="<?= htmlspecialchars($email); ?>" required>
-                </div>
+                        <div class="mb-3">
+                            <label for="telephone" class="form-label">Téléphone</label>
+                            <input type="text" class="form-control" id="telephone" name="telephone" value="<?= htmlspecialchars($telephone ?? ''); ?>">
+                        </div>
 
-                <div class="mb-3">
-                    <label for="specialite" class="form-label">Spécialité</label>
-                    <textarea class="form-control" id="specialite" name="specialite" rows="3"><?= htmlspecialchars($specialite ?? ''); ?></textarea>
-                </div>
+                        <div class="mb-3">
+                            <label for="specialite" class="form-label">Spécialité</label>
+                            <input type="text" class="form-control" id="specialite" name="specialite" value="<?= htmlspecialchars($specialite ?? ''); ?>">
+                        </div>
 
-                <div class="mb-3">
-                    <label for="adresse" class="form-label">Adresse</label>
-                    <textarea class="form-control" id="adresse" name="adresse" rows="3"><?= htmlspecialchars($adresse ?? ''); ?></textarea>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-warning" name="validate">Enregistrer les modifications</button>
+                        </div>
+                    </form>
                 </div>
-
-                <button type="submit" class="btn btn-warning" name="validate">Enregistrer les modifications</button>
-            </form>
+            </div>
         <?php endif; ?>
     </div>
 </body>
