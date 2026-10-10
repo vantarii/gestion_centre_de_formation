@@ -21,37 +21,51 @@ function generateRandomString($length = 6)
     return $randomString;
 }
 
+// Initialisation des listes pour les select
+$etudiants = [];
+$formations = [];
+
+try {
+    $etudiants = $bdd->query('SELECT id, nom, prenom FROM etudiant WHERE status = 1 ORDER BY nom ASC')->fetchAll(PDO::FETCH_ASSOC);
+    $formations = $bdd->query('SELECT id, titre, prix FROM formation WHERE status = 1 ORDER BY titre ASC')->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $errorMsg = "Erreur lors du chargement des options : " . $e->getMessage();
+}
+
 // 1. Récupération de l'identifiant (uuid prioritaire, id numérique en repli)
-$paramIdentifiant = $_GET['uuid'] ?? $_GET['id'] ?? $_POST['inscription_uuid'] ?? $_POST['id_inscription'] ?? null;
+$paramIdentifiant = $_GET['uuid'] ?? $_GET['id'] ?? null;
 
 if (!empty($paramIdentifiant)) {
 
-    // Recherche de l'inscription active par inscription_uuid OU par id
+    // Recherche de l'inscription active
     $getInscription = $bdd->prepare('SELECT * FROM inscription WHERE (inscription_uuid = ? OR id = ?) AND status = 1');
     $getInscription->execute([$paramIdentifiant, $paramIdentifiant]);
 
     if ($getInscription->rowCount() > 0) {
-        $inscription = $getInscription->fetch(PDO::FETCH_ASSOC);
-        $idInscription = $inscription['id'];
+        $inscriptionInfos = $getInscription->fetch(PDO::FETCH_ASSOC);
+        $idInscription = $inscriptionInfos['id'];
 
-        // Si l'inscription n'a pas encore d'UUID enregistré, on lui en génère un automatiquement
-        if (empty($inscription['inscription_uuid'])) {
+        // Si l'inscription n'a pas d'UUID, on le génère immédiatement
+        if (empty($inscriptionInfos['inscription_uuid'])) {
             $newUuid = generateRandomString(6);
             $updateUuid = $bdd->prepare('UPDATE inscription SET inscription_uuid = ? WHERE id = ?');
             $updateUuid->execute([$newUuid, $idInscription]);
-            $inscription['inscription_uuid'] = $newUuid;
+            $inscriptionInfos['inscription_uuid'] = $newUuid;
         }
 
-        $inscriptionUuid = $inscription['inscription_uuid'];
+        $inscriptionUuid = $inscriptionInfos['inscription_uuid'];
+        
+        // Alias pour assurer la compatibilité si $inscription est utilisé dans la vue
+        $inscription = $inscriptionInfos;
 
     } else {
-        $_SESSION['error_msg'] = "L'inscription à modifier n'existe pas ou a été annulée.";
+        $errorMsg = "L'inscription à modifier n'existe pas ou a été annulée.";
     }
 } else {
-    $_SESSION['error_msg'] = "Aucun identifiant transmis.";
+    $errorMsg = "Aucun identifiant transmis.";
 }
 
-// 2. Traitement de la modification lors de la soumission du formulaire
+// 2. Traitement du formulaire lors de la soumission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
 
     $etudiantId = !empty($_POST['etudiant_id']) ? intval($_POST['etudiant_id']) : null;
@@ -60,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
     if (isset($idInscription) && $etudiantId && $formationId) {
 
         try {
-            // Vérifier si une AUTRE inscription active existe déjà pour ce même étudiant et cette même formation
+            // Empêcher les doublons d'inscription
             $checkDuplicate = $bdd->prepare('
                 SELECT id FROM inscription 
                 WHERE etudiant_id = ? AND formation_id = ? AND status = 1 AND id != ?
@@ -68,32 +82,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
             $checkDuplicate->execute([$etudiantId, $formationId, $idInscription]);
 
             if ($checkDuplicate->rowCount() > 0) {
-                $_SESSION['error_msg'] = "Cet étudiant est déjà inscrit à cette formation !";
-                header('Location: ../../pages/inscriptions/modif.php?uuid=' . $inscriptionUuid);
+                $errorMsg = "Cet étudiant est déjà inscrit à cette formation !";
+            } else {
+                $updateInscription = $bdd->prepare('
+                    UPDATE inscription 
+                    SET etudiant_id = ?, formation_id = ? 
+                    WHERE id = ? AND status = 1
+                ');
+                $updateInscription->execute([$etudiantId, $formationId, $idInscription]);
+
+                // Mise à jour des variables locales pour l'affichage
+                $inscriptionInfos['etudiant_id'] = $etudiantId;
+                $inscriptionInfos['formation_id'] = $formationId;
+                $inscription = $inscriptionInfos;
+
+                $_SESSION['success_msg'] = "L'inscription a été modifiée avec succès !";
+                header('Location: index.php');
                 exit();
             }
 
-            // Exécuter la mise à jour
-            $updateInscription = $bdd->prepare('
-                UPDATE inscription 
-                SET etudiant_id = ?, formation_id = ? 
-                WHERE id = ? AND status = 1
-            ');
-            $updateInscription->execute([$etudiantId, $formationId, $idInscription]);
-
-            $_SESSION['success_msg'] = "L'inscription a été modifiée avec succès !";
-            header('Location: ../../pages/inscriptions/index.php');
-            exit();
-
         } catch (PDOException $e) {
-            $_SESSION['error_msg'] = "Erreur lors de la modification : " . $e->getMessage();
-            header('Location: ../../pages/inscriptions/modif.php?uuid=' . $inscriptionUuid);
-            exit();
+            $errorMsg = "Erreur SQL : " . $e->getMessage();
         }
 
     } else {
-        $_SESSION['error_msg'] = "Veuillez sélectionner un étudiant et une formation.";
-        header('Location: ../../pages/inscriptions/modif.php?uuid=' . ($inscriptionUuid ?? ''));
-        exit();
+        $errorMsg = "Veuillez sélectionner un étudiant et une formation.";
     }
 }
