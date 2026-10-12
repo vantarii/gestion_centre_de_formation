@@ -32,5 +32,5 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 }
 
 // Redirection vers l'index des inscriptions
-header('Location: ../../pages/inscription/index.php');
+header('Location: ../../pages/inscriptions/index.php');
 exit();
