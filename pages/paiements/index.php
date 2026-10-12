@@ -17,6 +17,7 @@ try {
     $sql = '
         SELECT 
             p.id,
+            p.paiement_uuid,
             p.reference,
             p.montant,
             p.mode_paiement,
@@ -65,12 +66,9 @@ try {
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Gestion des Paiements</h2>
-            <a href="ajoutPaiement.php" class="btn btn-success">
-                + Nouveau paiement
-            </a>
+            <a href="ajoutPaiement.php" class="btn btn-success">+ Nouveau paiement</a>
         </div>
 
-        <!-- Notifications -->
         <?php if (isset($_SESSION['success_msg'])): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?= htmlspecialchars($_SESSION['success_msg']); ?>
@@ -134,37 +132,27 @@ try {
                             <?php foreach ($paiements as $paiement): ?>
                                 <tr>
                                     <td><code><?= htmlspecialchars($paiement['reference'] ?? 'N/A'); ?></code></td>
-                                    <td>
-                                        <strong><?= htmlspecialchars($paiement['etudiant_nom'] . ' ' . $paiement['etudiant_prenom']); ?></strong>
-                                    </td>
+                                    <td><strong><?= htmlspecialchars($paiement['etudiant_nom'] . ' ' . $paiement['etudiant_prenom']); ?></strong></td>
                                     <td><span class="badge bg-secondary"><?= htmlspecialchars($paiement['formation_titre']); ?></span></td>
                                     <td><strong class="text-success"><?= number_format($paiement['montant'], 2, ',', ' '); ?></strong></td>
                                     <td><span class="badge bg-info text-dark"><?= htmlspecialchars($paiement['mode_paiement']); ?></span></td>
                                     <td>
                                         <?php 
                                         $st = intval($paiement['statut'] ?? 1);
-                                        if ($st === 1) {
-                                            echo '<span class="badge bg-success">Validé</span>';
-                                        } elseif ($st === 0) {
-                                            echo '<span class="badge bg-warning text-dark">En attente</span>';
-                                        } else {
-                                            echo '<span class="badge bg-danger">Échoué</span>';
-                                        }
+                                        if ($st === 1) echo '<span class="badge bg-success">Validé</span>';
+                                        elseif ($st === 0) echo '<span class="badge bg-warning text-dark">En attente</span>';
+                                        else echo '<span class="badge bg-danger">Échoué</span>';
                                         ?>
                                     </td>
-                                    <td>
-                                        <?= !empty($paiement['date_paiement']) ? date('d/m/Y H:i', strtotime($paiement['date_paiement'])) : '-'; ?>
-                                    </td>
+                                    <td><?= !empty($paiement['date_paiement']) ? date('d/m/Y H:i', strtotime($paiement['date_paiement'])) : '-'; ?></td>
                                     <td class="text-center">
-                                        <a href="modifPaiement.php?uuid=<?= $paiement['paiement_uuid'] ?? $paiement['id']; ?>" class="btn btn-warning">Modifier</a>
+                                        <a href="modifPaiement.php?uuid=<?= htmlspecialchars($paiement['paiement_uuid']); ?>" class="btn btn-sm btn-warning">Modifier</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="9" class="text-center text-muted py-4">
-                                    Aucun paiement trouvé.
-                                </td>
+                                <td colspan="8" class="text-center text-muted py-4">Aucun paiement trouvé.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
