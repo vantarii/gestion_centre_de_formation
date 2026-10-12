@@ -53,11 +53,6 @@ if (!empty($paramIdentifiant)) {
             $inscriptionInfos['inscription_uuid'] = $newUuid;
         }
 
-        $inscriptionUuid = $inscriptionInfos['inscription_uuid'];
-        
-        // Alias pour assurer la compatibilité si $inscription est utilisé dans la vue
-        $inscription = $inscriptionInfos;
-
     } else {
         $errorMsg = "L'inscription à modifier n'existe pas ou a été annulée.";
     }
@@ -90,11 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['validate'])) {
                     WHERE id = ? AND status = 1
                 ');
                 $updateInscription->execute([$etudiantId, $formationId, $idInscription]);
-
-                // Mise à jour des variables locales pour l'affichage
-                $inscriptionInfos['etudiant_id'] = $etudiantId;
-                $inscriptionInfos['formation_id'] = $formationId;
-                $inscription = $inscriptionInfos;
 
                 $_SESSION['success_msg'] = "L'inscription a été modifiée avec succès !";
                 header('Location: index.php');

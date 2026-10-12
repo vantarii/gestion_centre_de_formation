@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../traitements/inscriptions/modif.php';
 
     <div class="container mt-5" style="max-width: 600px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Modifier l'inscription #<?= htmlspecialchars($inscriptionInfos['id'] ?? ''); ?></h2>
+            <h2>Modifier l'inscription</h2>
             <a href="index.php" class="btn btn-secondary">← Retour</a>
         </div>
 
@@ -30,9 +30,9 @@ require_once __DIR__ . '/../../traitements/inscriptions/modif.php';
                         
                         <!-- Choix de l'étudiant -->
                         <div class="mb-3">
-                            <label class="form-label">Étudiante :</label>
+                            <label class="form-label">Étudiant :</label>
                             <select name="etudiant_id" class="form-select" required>
-                                <option value="">-- Sélectionner une étudiante --</option>
+                                <option value="">-- Sélectionner un étudiant --</option>
                                 <?php if (!empty($etudiants)): ?>
                                     <?php foreach ($etudiants as $etudiant): ?>
                                         <option value="<?= $etudiant['id']; ?>" <?= ($etudiant['id'] == $inscriptionInfos['etudiant_id']) ? 'selected' : ''; ?>>

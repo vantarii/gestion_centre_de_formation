@@ -14,6 +14,7 @@ try {
     $getInscriptions = $bdd->prepare('
         SELECT 
             i.id,
+            i.inscription_uuid,
             i.date_inscription,
             e.nom AS etudiant_nom,
             e.prenom AS etudiant_prenom,
@@ -91,7 +92,7 @@ try {
                                     </td>
                                     <td class="text-center">
                                         <!-- Bouton Modifier -->
-                                        <a href="modif.php?uuid=<?= $inscription['inscription_uuid'] ?? $inscription['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
+                                        <a href="modifInscrip.php?uuid=<?= $inscription['inscription_uuid'] ?? $inscription['id']; ?>" class="btn btn-sm btn-warning me-1">Modifier</a>
 
                                         <!-- Bouton Annuler -->
                                         <a href="../../traitements/inscriptions/suppri.php?id=<?= $inscription['id']; ?>" 
